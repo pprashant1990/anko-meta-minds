@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bucks2Bar</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .month-row {
+            margin-bottom: 10px;
+        }
+        .month-label {
+            font-weight: 500;
+            min-width: 100px;
+        }
+        #chartCanvas {
+            max-height: 500px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center mb-4">Bucks2Bar Budget Tracker</h1>
+
+    <!-- Username Input Section -->
+    <div class="mb-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form id="usernameForm" novalidate>
+                    <label for="usernameInput" class="form-label">Username</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="usernameInput"
+                            placeholder="Enter username"
+                            minlength="5"
+                            required
+                    >
+                    <div class="form-text">
+                        Must contain at least 1 uppercase letter, 1 number, 1 special character, and be at least 5 characters long.
+                    </div>
+                    <div id="usernameError" class="invalid-feedback d-block">
+                    </div>
+                    <div id="usernameSuccess" class="valid-feedback d-block">
+                        Username is valid!
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2" id="submitUsernameBtn">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="data-tab" data-bs-toggle="tab" data-bs-target="#data" type="button" role="tab">Data</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="chart-tab" data-bs-toggle="tab" data-bs-target="#chart" type="button" role="tab">Chart</button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="myTabContent">
+        <!-- Data Tab -->
+        <div class="tab-pane fade show active" id="data" role="tabpanel">
+            <div class="row mb-3">
+                <div class="col-md-4"></div>
+                <div class="col-md-4 text-center">
+                    <strong>Income</strong>
+                </div>
+                <div class="col-md-4 text-center">
+                    <strong>Expenses</strong>
+                </div>
+            </div>
+            <form id="budgetForm">
+                <div class="month-row row align-items-center">
+                    <div class="col-md-4 month-label">January</div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control income-input" id="income-jan" data-month="January" min="0" step="0.01" placeholder="0.00" aria-label="January Income" value="850">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control expense-input" id="expense-jan" data-month="January" min="0" step="0.01" placeholder="0.00" aria-label="January Expenses" value="720">
+                    </div>
+                </div>
+                <div class="month-row row align-items-center">
+                    <div class="col-md-4 month-label">February</div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control income-input" id="income-feb" data-month="February" min="0" step="0.01" placeholder="0.00" aria-label="February Income" value="920">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control expense-input" id="expense-feb" data-month="February" min="0" step="0.01" placeholder="0.00" aria-label="February Expenses" value="680">
+                    </div>
+                </div>
+                <div class="month-row row align-items-center">
+                    <div class="col-md-4 month-label">March</div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control income-input" id="income-mar" data-month="March" min="0" step="0.01" placeholder="0.00" aria-label="March Income" value="750">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control expense-input" id="expense-mar" data-month="March" min="0" step="0.01" placeholder="0.00" aria-label="March Expenses" value="820">
+                    </div>
+                </div>
+                <div class="month-row row align-items-center">
+                    <div class="col-md-4 month-label">April</div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control income-input" id="income-apr" data-month="April" min="0" step="0.01" placeholder="0.00" aria-label="April Income" value="890">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control expense-input" id="expense-apr" data-month="April" min="0" step="0.01" placeholder="0.00" aria-label="April Expenses" value="650">
+                    </div>
+                </div>
+                <div class="month-row row align-items-center">
+                    <div class="col-md-4 month-label">May</div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control income-input" id="income-may" data-month="May" min="0" step="0.01" placeholder="0.00" aria-label="May Income" value="950">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control expense-input" id="expense-may" data-month="May" min="0" step="0.01" placeholder="0.00" aria-label="May Expenses" value="780">
+                    </div>
+                </div>
+                <div class="month-row row align-items-center">
+                    <div class="col-md-4 month-label">June</div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control income-input" id="income-jun" data-month="June" min="0" step="0.01" placeholder="0.00" aria-label="June Income" value="820">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control expense-input" id="expense-jun" data-month="June" min="0" step="0.01" placeholder="0.00" aria-label="June Expenses" value="710">
+                    </div>
+                </div>
+                <div class="month-row row align-items-center">
+                    <div class="col-md-4 month-label">July</div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control income-input" id="income-jul" data-month="July" min="0" step="0.01" placeholder="0.00" aria-label="July Income" value="870">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control expense-input" id="expense-jul" data-month="July" min="0" step="0.01" placeholder="0.00" aria-label="July Expenses" value="640">
+                    </div>
+                </div>
+                <div class="month-row row align-items-center">
+                    <div class="col-md-4 month-label">August</div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control income-input" id="income-aug" data-month="August" min="0" step="0.01" placeholder="0.00" aria-label="August Income" value="910">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control expense-input" id="expense-aug" data-month="August" min="0" step="0.01" placeholder="0.00" aria-label="August Expenses" value="760">
+                    </div>
+                </div>
+                <div class="month-row row align-items-center">
+                    <div class="col-md-4 month-label">September</div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control income-input" id="income-sep" data-month="September" min="0" step="0.01" placeholder="0.00" aria-label="September Income" value="830">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control expense-input" id="expense-sep" data-month="September" min="0" step="0.01" placeholder="0.00" aria-label="September Expenses" value="690">
+                    </div>
+                </div>
+                <div class="month-row row align-items-center">
+                    <div class="col-md-4 month-label">October</div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control income-input" id="income-oct" data-month="October" min="0" step="0.01" placeholder="0.00" aria-label="October Income" value="880">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control expense-input" id="expense-oct" data-month="October" min="0" step="0.01" placeholder="0.00" aria-label="October Expenses" value="740">
+                    </div>
+                </div>
+                <div class="month-row row align-items-center">
+                    <div class="col-md-4 month-label">November</div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control income-input" id="income-nov" data-month="November" min="0" step="0.01" placeholder="0.00" aria-label="November Income" value="940">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control expense-input" id="expense-nov" data-month="November" min="0" step="0.01" placeholder="0.00" aria-label="November Expenses" value="800">
+                    </div>
+                </div>
+                <div class="month-row row align-items-center">
+                    <div class="col-md-4 month-label">December</div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control income-input" id="income-dec" data-month="December" min="0" step="0.01" placeholder="0.00" aria-label="December Income" value="860">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control expense-input" id="expense-dec" data-month="December" min="0" step="0.01" placeholder="0.00" aria-label="December Expenses" value="670">
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-12 text-center">
+                        <button type="button" id="updateChartBtn" class="btn btn-primary btn-lg">Update Chart</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Chart Tab -->
+        <div class="tab-pane fade" id="chart" role="tabpanel">
+            <div class="chart-container">
+                <canvas id="chartCanvas"></canvas>
+            </div>
+            <div class="text-center mt-4">
+                <button type="button" id="downloadChartBtn" class="btn btn-success btn-lg">Download Chart</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- Custom Script -->
+<script src="script.js"></script>
+</body>
+</html>
